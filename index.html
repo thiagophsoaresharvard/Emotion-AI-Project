@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emotion AI Project</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 </head>
 <body>
-    <h1>Emotion AI Project</h1>
-    <p>Detecting emotions using a Teachable Machine model.</p>
-    <video id="webcam" autoplay playsinline width="640" height="480"></video>
+    <div>Teachable Machine Image Model</div>
+    <button type="button" onclick="init()">Start</button>
+    <div id="webcam-container"></div>
     <div id="label-container"></div>
     <script type="text/javascript">
-        const URL = "model/";  // This points to where your model files will be
+        const URL = "model/";
+
         let model, webcam, labelContainer, maxPredictions;
 
         async function init() {
@@ -29,7 +30,7 @@
             await webcam.play();
             window.requestAnimationFrame(loop);
 
-            document.getElementById("webcam").appendChild(webcam.canvas);
+            document.getElementById("webcam-container").appendChild(webcam.canvas);
             labelContainer = document.getElementById("label-container");
             for (let i = 0; i < maxPredictions; i++) {
                 labelContainer.appendChild(document.createElement("div"));
@@ -49,8 +50,6 @@
                 labelContainer.childNodes[i].innerHTML = classPrediction;
             }
         }
-
-        init();
     </script>
 </body>
 </html>
