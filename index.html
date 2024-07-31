@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion AI Project</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image"></script>
+</head>
+<body>
+    <h1>Emotion AI Project</h1>
+    <p>Detecting emotions using a Teachable Machine model.</p>
+    <video id="webcam" autoplay playsinline width="640" height="480"></video>
+    <div id="label-container"></div>
+    <script type="text/javascript">
+        const URL = "model/";  // This points to where your model files will be
+        let model, webcam, labelContainer, maxPredictions;
+
+        async function init() {
+            const modelURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
+
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+
+            const flip = true;
+            webcam = new tmImage.Webcam(200, 200, flip);
+            await webcam.setup();
+            await webcam.play();
+            window.requestAnimationFrame(loop);
+
+            document.getElementById("webcam").appendChild(webcam.canvas);
+            labelContainer = document.getElementById("label-container");
+            for (let i = 0; i < maxPredictions; i++) {
+                labelContainer.appendChild(document.createElement("div"));
+            }
+        }
+
+        async function loop() {
+            webcam.update();
+            await predict();
+            window.requestAnimationFrame(loop);
+        }
+
+        async function predict() {
+            const prediction = await model.predict(webcam.canvas);
+            for (let i = 0; i < maxPredictions; i++) {
+                const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+                labelContainer.childNodes[i].innerHTML = classPrediction;
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
